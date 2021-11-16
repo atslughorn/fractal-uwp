@@ -10,7 +10,7 @@ namespace Fractal
     {
         public static int width = 1000;
         public static int height = 224 * width / 247;
-        public static int maxIteration = 100;
+        public static int maxIteration = 500;
         public static double xRange;
         public static double xMin;
         public static double yRange;
@@ -108,7 +108,9 @@ namespace Fractal
                         }
                         else
                         {
-                            pixel[0] = pixel[1] = pixel[2] = (byte)(255 * hue / total);
+                            pixel[0] = (byte)(255 - 255 * hue / total);
+                            pixel[1] = (byte)(128 + 128 * hue / total);
+                            pixel[2] = (byte)(255 * hue / total);
                         }
                         if (hue > 0)
                         {
