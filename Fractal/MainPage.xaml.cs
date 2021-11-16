@@ -1,17 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace Fractal
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         public static int width = 1000;
@@ -114,7 +108,7 @@ namespace Fractal
                         }
                         else
                         {
-                            pixel[0] = pixel[1] = pixel[2] = (byte)(255 * (hue) / total);
+                            pixel[0] = pixel[1] = pixel[2] = (byte)(255 * hue / total);
                         }
                         if (hue > 0)
                         {
