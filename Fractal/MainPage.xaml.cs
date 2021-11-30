@@ -11,6 +11,7 @@ namespace Fractal
         public static int width = 1000;
         public static int height = 224 * width / 247;
         public static int maxIteration = 500;
+        public static int[,] colors = { { 0, 0, 255 }, { 0, 128, 255 }, { 0, 255, 255 }, { 0, 255, 0 }, { 255, 0, 0 }, { 128, 0, 128 }, { 255, 128, 255 } };
         public static double xRange;
         public static double xMin;
         public static double yRange;
@@ -43,6 +44,8 @@ namespace Fractal
                 byte[] pixel = { 255, 255, 255, 255 };
                 int[,] iterations = new int[width, height];
                 bufferStream.Position = 0;
+                int color;
+                int colorInterpolation;
 
                 for (int y = 0; y < height; y++)
                 {
@@ -108,13 +111,12 @@ namespace Fractal
                         }
                         else
                         {
-                            pixel[0] = (byte)(255 - 255 * hue / total);
-                            pixel[1] = (byte)(128 + 128 * hue / total);
-                            pixel[2] = (byte)(255 * hue / total);
-                        }
-                        if (hue > 0)
-                        {
-                            ;
+                            color = (colors.GetLength(0)) * hue / total;
+                            colorInterpolation = (colors.GetLength(0)) * hue % total;
+                            for (int j = 0; j < 3; j++)
+                            {
+                                pixel[j] = (byte)(colors[color, j] + colorInterpolation * (colors[color, j] - colors[color + 1, j]));
+                            }
                         }
                         bufferStream.Write(pixel, 0, 4);
                     }
