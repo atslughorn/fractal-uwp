@@ -15,5 +15,7 @@
         </Grid.ColumnDefinitions>
         <Image x:Name="myImage" Loaded="myImage_Loaded" Grid.Column="1" PointerPressed="myImage_PointerReleased" />
         <Button Content="Reset zoom" Height="180" Margin="0,100,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="515" Click="Reset_Zoom_Button"/>
+        <ComboBox x:Name="SetButton"  Height="180" Margin="0,380,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="515" ItemsSource="{x:Bind fractalSets}" SelectionChanged="SetButton_SelectionChanged"/>
+        <TextBlock x:Name="" />
     </Grid>
 </Page>
