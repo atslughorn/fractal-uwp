@@ -13,9 +13,10 @@
             <ColumnDefinition Width="7*" />
             <ColumnDefinition Width="9*" />
         </Grid.ColumnDefinitions>
-        <Image x:Name="myImage" Loaded="myImage_Loaded" Grid.Column="1" PointerPressed="myImage_PointerReleased" />
-        <Button Content="Reset zoom" Height="180" Margin="0,100,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="515" Click="Reset_Zoom_Button"/>
-        <ComboBox x:Name="SetButton"  Height="180" Margin="0,380,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="515" ItemsSource="{x:Bind fractalSets}" SelectionChanged="SetButton_SelectionChanged"/>
-        <TextBlock x:Name="" />
+        <Image x:Name="myImage" Loaded="myImage_Loaded" Grid.Column="1" PointerPressed="myImage_PointerReleased" VerticalAlignment="Top"/>
+        <Button Content="Reset zoom" Height="150" Margin="0,100,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="515" FontSize="50" Click="Reset_Zoom_Button"/>
+        <ComboBox x:Name="fractalBox"  Height="150" Margin="0,380,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="515" FontSize="50" Header="Fracal set:" Loaded="fractalBox_Loaded" SelectionChanged="fractalBox_SelectionChanged"/>
+        <TextBox x:Name="iterationsBox" Height="150" Margin="0,660,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="515" FontSize="50" Text="500" Header="Iterations:" BeforeTextChanging="iterationsBox_BeforeTextChanging" LostFocus="iterationsBox_LostFocus" TextChanged="iterationsBox_TextChanged"/>
+        <TextBlock Text="Left-click to zoom-in, right-click to zoom-out" FontSize="50" Grid.Column="1" VerticalAlignment="Bottom" />
     </Grid>
 </Page>
