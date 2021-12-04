@@ -1,4 +1,5 @@
 ﻿using FractalAlgorithms;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml;
@@ -17,12 +18,16 @@ namespace Fractal
         public static double yRange;
         public static double yMin;
         public static WriteableBitmap writeableBitmap;
-        public string[] fractalSets = { "Mandlebrot", "Julia" };
+        public IEnumerable<byte[]> pixels;
+        public IFractal currentFractal;
+        public Dictionary<string, IFractal> fractalSets = new Dictionary<string, IFractal>();
         public bool boxEmptyAndInputCancelled = false;//Used to fix a bug that occurs when the input box is empty and the input gets cancelled and the next input doesn't get cancelled
 
         public MainPage()
         {
             this.InitializeComponent();
+            fractalSets.Add("Mandlebrot", new Mandlebrot());
+            fractalSets.Add("Burning Ship", new BurningShip());
         }
 
         private void myImage_Loaded(object sender, RoutedEventArgs e)
@@ -32,16 +37,17 @@ namespace Fractal
             myImage.Height = height;
             myImage.Source = writeableBitmap;
 
-            Reset_Zoom();
-            DrawFractal(writeableBitmap);
+            //Reset_Zoom();
         }
 
         private void DrawFractal(WriteableBitmap fractalBitmap)
         {
             using (Stream bufferStream = fractalBitmap.PixelBuffer.AsStream())
             {
+                pixels = SelectedFractal();
                 //bufferStream.Position = 0;
-                foreach (byte[] pixel in Mandlebrot())
+
+                foreach (byte[] pixel in pixels)
                 {
                     bufferStream.Write(pixel, 0, 4);
                 }
@@ -50,14 +56,36 @@ namespace Fractal
             fractalBitmap.Invalidate();
         }
 
-        /*private System.Collections.Generic.IEnumerable<byte[]> Julia()
+        private IEnumerable<byte[]> SelectedFractal()
         {
+            switch (fractalBox.SelectedItem)
+            {
+                default:
+                    return Mandlebrot();
+            }
+        }
 
-        }*/
-
-        private System.Collections.Generic.IEnumerable<byte[]> Mandlebrot()
+        private int BurningShip(int x0, int y0)
         {
-            int[] iterationFrequencies = new int[maxIteration];
+            int xtemp;
+            int iteration = 0;
+            int zx = x0;
+            int zy = y0;
+
+            while (zx * zx + zy * zy < 4 && iteration < maxIteration)
+            {
+                xtemp = zx * zx - zy * zy + x0;
+                zy = System.Math.Abs(2 * zx * zy) + y0;
+                zx = xtemp;
+                iteration++;
+            }
+
+            return iteration;
+        }
+
+        private IEnumerable<byte[]> Mandlebrot()
+        {
+            int[] iterationFrequencies = new int[maxIteration + 1];
             double y0, x0, a, b, a2, b2;
             int iteration;
             byte[] pixel = { 255, 255, 255, 255 };
@@ -69,18 +97,10 @@ namespace Fractal
                 for (int x = 0; x < width; x++)
                 {
                     x0 = x * xRange / width + xMin;
-                    a = b = a2 = b2 = iteration = 0;
 
-                    while (a2 + b2 <= 4 && iteration < maxIteration)
-                    {
-                        b = 2 * a * b + y0;
-                        a = a2 - b2 + x0;
-                        a2 = a * a;
-                        b2 = b * b;
-                        iteration++;
-                    }
+                    iteration = currentFractal.calculatePixel(x0, y0, maxIteration);
 
-                    iterations[x, y] = iteration - 1;
+                    iterations[x, y] = iteration;
 
 
                 }
@@ -112,7 +132,7 @@ namespace Fractal
                         hue += iterationFrequencies[i];
                     }
 
-                    if (iterations[x, y] == maxIteration - 1)
+                    if (iterations[x, y] == maxIteration)
                     {
                         pixel[0] = pixel[1] = pixel[2] = 0;
                     }
@@ -131,11 +151,10 @@ namespace Fractal
         }
         private void Reset_Zoom()
         {
-            xRange = 2.47;
-            xMin = -2;
-            yRange = 2.24;
-            yMin = -1.12;
-
+            xRange = currentFractal.xRange;
+            xMin = currentFractal.xMin;
+            yRange = currentFractal.yRange;
+            yMin = currentFractal.yMin;
             DrawFractal(writeableBitmap);
         }
 
@@ -197,12 +216,14 @@ namespace Fractal
 
         private void fractalBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            fractalSets.TryGetValue((string) e.AddedItems[0], out currentFractal);
             Reset_Zoom();
         }
 
         private void fractalBox_Loaded(object sender, RoutedEventArgs e)
         {
-            fractalBox.ItemsSource = fractalSets;
+            fractalBox.ItemsSource = fractalSets.Keys;
+            currentFractal = fractalSets.Values.GetEnumerator().Current;
             fractalBox.SelectedIndex = 0;
         }
     }
