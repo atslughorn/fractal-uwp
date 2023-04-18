@@ -2,13 +2,13 @@
 {
     class BurningShip : IFractal
     {
-        public double xRange => 3.5;
+        public double xRange => 3.2;
 
-        public double yRange => 2;
+        public double yRange => 2.2;
 
-        public double xMin => -2.5;
+        public double xMin => -2;
 
-        public double yMin => -1;
+        public double yMin => -1.75;
 
         public int calculatePixel(double x0, double y0, int maxIteration)
         {

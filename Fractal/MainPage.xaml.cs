@@ -61,7 +61,7 @@ namespace Fractal
             switch (fractalBox.SelectedItem)
             {
                 default:
-                    return Mandlebrot();
+                    return GenerateFractal();
             }
         }
 
@@ -83,10 +83,10 @@ namespace Fractal
             return iteration;
         }
 
-        private IEnumerable<byte[]> Mandlebrot()
+        private IEnumerable<byte[]> GenerateFractal()
         {
             int[] iterationFrequencies = new int[maxIteration + 1];
-            double y0, x0, a, b, a2, b2;
+            double y0, x0;
             int iteration;
             byte[] pixel = { 255, 255, 255, 255 };
             int[,] iterations = new int[width, height];
